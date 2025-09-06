@@ -1,0 +1,72 @@
+[
+  {
+    "question": "Solve the equation 2x + 3 = 7",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Start with the equation\n2x + 3 = 7\n\n**Step 2:** Subtract 3 from both sides\n2x + 3 - 3 = 7 - 3\n2x = 4\n\n**Step 3:** Divide both sides by 2\n2x ÷ 2 = 4 ÷ 2\nx = 2\n\n**Step 4:** Verify the solution\nSubstitute x = 2 into the original equation:\n2(2) + 3 = 4 + 3 = 7 ✓\n\n**Final Answer:** x = 2",
+    "source": "manual",
+    "topic": "algebra",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Find the derivative of f(x) = x²",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Apply the power rule\nFor f(x) = x^n, the derivative is f'(x) = n·x^(n-1)\n\n**Step 2:** Identify the exponent\nIn f(x) = x², we have n = 2\n\n**Step 3:** Apply the formula\nf'(x) = 2·x^(2-1) = 2·x^1 = 2x\n\n**Step 4:** Verification using the definition\nf'(x) = lim(h→0) [(x+h)² - x²]/h\n= lim(h→0) [x² + 2xh + h² - x²]/h\n= lim(h→0) [2xh + h²]/h\n= lim(h→0) [2x + h]\n= 2x\n\n**Final Answer:** f'(x) = 2x",
+    "source": "manual",
+    "topic": "calculus",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the area of a circle with radius 5?",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Recall the area formula for a circle\nArea = π × r²\nwhere r is the radius\n\n**Step 2:** Substitute the given radius\nr = 5\nArea = π × 5²\n\n**Step 3:** Calculate\nArea = π × 25 = 25π\n\n**Step 4:** Numerical approximation\nUsing π ≈ 3.14159:\nArea ≈ 25 × 3.14159 ≈ 78.54 square units\n\n**Final Answer:** 25π square units (or approximately 78.54 square units)",
+    "source": "manual",
+    "topic": "geometry",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Solve the quadratic equation x² - 5x + 6 = 0",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Try factoring\nWe need two numbers that multiply to 6 and add to -5\nThose numbers are -2 and -3 because (-2) × (-3) = 6 and (-2) + (-3) = -5\n\n**Step 2:** Factor the quadratic\nx² - 5x + 6 = (x - 2)(x - 3) = 0\n\n**Step 3:** Apply the zero product property\nIf (x - 2)(x - 3) = 0, then either:\nx - 2 = 0  or  x - 3 = 0\n\n**Step 4:** Solve each equation\nFrom x - 2 = 0: x = 2\nFrom x - 3 = 0: x = 3\n\n**Step 5:** Verify the solutions\nFor x = 2: (2)² - 5(2) + 6 = 4 - 10 + 6 = 0 ✓\nFor x = 3: (3)² - 5(3) + 6 = 9 - 15 + 6 = 0 ✓\n\n**Final Answer:** x = 2 or x = 3",
+    "source": "manual",
+    "topic": "algebra",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the integral of 2x?",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Apply the power rule for integration\n∫ x^n dx = (x^(n+1))/(n+1) + C\n\n**Step 2:** Rewrite 2x in proper form\n∫ 2x dx = 2∫ x dx = 2∫ x¹ dx\n\n**Step 3:** Apply the power rule\nFor x¹, we have n = 1\n∫ x¹ dx = x^(1+1)/(1+1) + C = x²/2 + C\n\n**Step 4:** Include the constant factor\n2∫ x dx = 2(x²/2 + C) = x² + 2C\n\n**Step 5:** Simplify the constant\nSince 2C is just an arbitrary constant, we can write it as C\n\n**Step 6:** Verification by differentiation\nd/dx(x² + C) = 2x ✓\n\n**Final Answer:** ∫ 2x dx = x² + C",
+    "source": "manual",
+    "topic": "calculus",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "Find the slope of the line passing through points (2, 3) and (5, 9)",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Recall the slope formula\nSlope = (y₂ - y₁)/(x₂ - x₁)\nwhere (x₁, y₁) and (x₂, y₂) are two points on the line\n\n**Step 2:** Identify the coordinates\nPoint 1: (x₁, y₁) = (2, 3)\nPoint 2: (x₂, y₂) = (5, 9)\n\n**Step 3:** Substitute into the formula\nSlope = (9 - 3)/(5 - 2)\nSlope = 6/3\nSlope = 2\n\n**Step 4:** Interpretation\nThe slope is 2, which means for every 1 unit increase in x, y increases by 2 units.\n\n**Final Answer:** The slope is 2",
+    "source": "manual",
+    "topic": "algebra",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Simplify the expression (x + 2)(x - 3)",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Apply the FOIL method\nFOIL stands for First, Outer, Inner, Last\n(x + 2)(x - 3)\n\n**Step 2:** Multiply the First terms\nFirst: x × x = x²\n\n**Step 3:** Multiply the Outer terms\nOuter: x × (-3) = -3x\n\n**Step 4:** Multiply the Inner terms\nInner: 2 × x = 2x\n\n**Step 5:** Multiply the Last terms\nLast: 2 × (-3) = -6\n\n**Step 6:** Combine all terms\nx² + (-3x) + 2x + (-6)\n= x² - 3x + 2x - 6\n\n**Step 7:** Combine like terms\n-3x + 2x = -x\nSo: x² - x - 6\n\n**Final Answer:** x² - x - 6",
+    "source": "manual",
+    "topic": "algebra",
+    "difficulty": "basic"
+  },
+  {
+    "question": "What is sin(30°)?",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Recall special angle values\n30° is one of the special angles in trigonometry\n\n**Step 2:** Use the 30-60-90 triangle\nIn a 30-60-90 triangle, the sides are in the ratio 1 : √3 : 2\n- Side opposite to 30° = 1\n- Side opposite to 60° = √3\n- Hypotenuse = 2\n\n**Step 3:** Apply the sine definition\nsin(θ) = opposite side / hypotenuse\nsin(30°) = 1/2\n\n**Step 4:** Alternative verification using unit circle\nOn the unit circle, the point at 30° is (√3/2, 1/2)\nThe y-coordinate gives sin(30°) = 1/2\n\n**Step 5:** Decimal approximation\nsin(30°) = 1/2 = 0.5\n\n**Final Answer:** sin(30°) = 1/2 = 0.5",
+    "source": "manual",
+    "topic": "trigonometry",
+    "difficulty": "basic"
+  },
+  {
+    "question": "Find the limit of (x² - 4)/(x - 2) as x approaches 2",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Check for direct substitution\nIf we substitute x = 2 directly:\n(2² - 4)/(2 - 2) = (4 - 4)/(0) = 0/0\nThis is an indeterminate form, so we need to simplify first.\n\n**Step 2:** Factor the numerator\nx² - 4 = (x + 2)(x - 2)\nThis is a difference of squares: a² - b² = (a + b)(a - b)\n\n**Step 3:** Rewrite the expression\nlim(x→2) (x² - 4)/(x - 2) = lim(x→2) (x + 2)(x - 2)/(x - 2)\n\n**Step 4:** Cancel common factors\nSince x ≠ 2 (we're approaching 2, not equal to 2), we can cancel (x - 2):\nlim(x→2) (x + 2)(x - 2)/(x - 2) = lim(x→2) (x + 2)\n\n**Step 5:** Apply direct substitution\nlim(x→2) (x + 2) = 2 + 2 = 4\n\n**Step 6:** Verification using L'Hôpital's rule\nSince we had 0/0 form:\nlim(x→2) (x² - 4)/(x - 2) = lim(x→2) (2x)/(1) = 2(2) = 4 ✓\n\n**Final Answer:** The limit is 4",
+    "source": "manual",
+    "topic": "calculus",
+    "difficulty": "intermediate"
+  },
+  {
+    "question": "What is the volume of a sphere with radius 3?",
+    "answer": "**Step-by-step solution:**\n\n**Step 1:** Recall the volume formula for a sphere\nVolume = (4/3)πr³\nwhere r is the radius\n\n**Step 2:** Substitute the given radius\nr = 3\nVolume = (4/3)π(3)³\n\n**Step 3:** Calculate the cube\n3³ = 3 × 3 × 3 = 27\nVolume = (4/3)π(27)\n\n**Step 4:** Simplify\nVolume = (4 × 27/3)π = (108/3)π = 36π\n\n**Step 5:** Numerical approximation\nUsing π ≈ 3.14159:\nVolume ≈ 36 × 3.14159 ≈ 113.1 cubic units\n\n**Final Answer:** 36π cubic units (or approximately 113.1 cubic units)",
+    "source": "manual",
+    "topic": "geometry",
+    "difficulty": "intermediate"
+  }
+]

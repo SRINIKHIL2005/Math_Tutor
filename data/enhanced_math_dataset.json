@@ -1,0 +1,83 @@
+[
+  {
+    "id": "algebra_001",
+    "question": "Solve for x: 2x + 5 = 13",
+    "solution": "Step 1: Subtract 5 from both sides\n2x + 5 - 5 = 13 - 5\n2x = 8\n\nStep 2: Divide both sides by 2\n2x/2 = 8/2\nx = 4\n\nStep 3: Verification\n2(4) + 5 = 8 + 5 = 13 ✓",
+    "answer": "x = 4",
+    "topic": "Linear Equations",
+    "difficulty": "basic",
+    "source": "algebra_basics"
+  },
+  {
+    "id": "calculus_001", 
+    "question": "Find the derivative of f(x) = x³ + 2x² - 5x + 3",
+    "solution": "Step 1: Apply the power rule to each term\nFor x³: d/dx(x³) = 3x²\nFor 2x²: d/dx(2x²) = 4x\nFor -5x: d/dx(-5x) = -5\nFor 3: d/dx(3) = 0\n\nStep 2: Combine all terms\nf'(x) = 3x² + 4x - 5",
+    "answer": "f'(x) = 3x² + 4x - 5",
+    "topic": "Differentiation",
+    "difficulty": "intermediate",
+    "source": "calculus_basics"
+  },
+  {
+    "id": "jee_001",
+    "question": "If log₂(x-1) + log₂(x+1) = 3, find the value of x",
+    "solution": "Step 1: Use logarithm property log_a(m) + log_a(n) = log_a(mn)\nlog₂(x-1) + log₂(x+1) = log₂((x-1)(x+1)) = 3\n\nStep 2: Simplify the argument\nlog₂(x² - 1) = 3\n\nStep 3: Convert to exponential form\nx² - 1 = 2³ = 8\n\nStep 4: Solve for x\nx² = 9\nx = ±3\n\nStep 5: Check domain restrictions\nFor log₂(x-1): x > 1\nFor log₂(x+1): x > -1\nSo x > 1\n\nTherefore, x = 3",
+    "answer": "x = 3",
+    "topic": "Logarithms", 
+    "difficulty": "advanced",
+    "source": "jee_mains"
+  },
+  {
+    "id": "geometry_001",
+    "question": "Find the area of a triangle with vertices at A(0,0), B(4,0), and C(2,3)",
+    "solution": "Step 1: Use the coordinate geometry formula for triangle area\nArea = ½|x₁(y₂ - y₃) + x₂(y₃ - y₁) + x₃(y₁ - y₂)|\n\nStep 2: Substitute coordinates A(0,0), B(4,0), C(2,3)\nArea = ½|0(0 - 3) + 4(3 - 0) + 2(0 - 0)|\nArea = ½|0 + 12 + 0|\nArea = ½|12|\nArea = 6\n\nStep 3: Verification using base and height\nBase AB = 4 units\nHeight from C to AB = 3 units\nArea = ½ × base × height = ½ × 4 × 3 = 6 ✓",
+    "answer": "6 square units",
+    "topic": "Coordinate Geometry",
+    "difficulty": "intermediate",
+    "source": "geometry_basics"
+  },
+  {
+    "id": "trigonometry_001",
+    "question": "Prove that sin²θ + cos²θ = 1",
+    "solution": "Step 1: Consider a unit circle with center at origin\nFor any point P on the unit circle, coordinates are (cosθ, sinθ)\n\nStep 2: Apply distance formula\nDistance from origin to P = √[(cosθ - 0)² + (sinθ - 0)²]\n= √[cos²θ + sin²θ]\n\nStep 3: Since P is on unit circle, distance = 1\n√[cos²θ + sin²θ] = 1\n\nStep 4: Square both sides\ncos²θ + sin²θ = 1\n\nTherefore, sin²θ + cos²θ = 1 (Pythagorean identity)",
+    "answer": "Proven using unit circle and Pythagorean theorem",
+    "topic": "Trigonometric Identities",
+    "difficulty": "intermediate", 
+    "source": "trigonometry_basics"
+  },
+  {
+    "id": "jee_002",
+    "question": "Find the number of solutions of the equation 2ˣ = x² in the interval [0, 4]",
+    "solution": "Step 1: Define functions\nLet f(x) = 2ˣ and g(x) = x²\nWe need intersection points of these curves\n\nStep 2: Analyze behavior at key points\nAt x = 0: f(0) = 2⁰ = 1, g(0) = 0² = 0\nAt x = 1: f(1) = 2¹ = 2, g(1) = 1² = 1\nAt x = 2: f(2) = 2² = 4, g(2) = 2² = 4\nAt x = 4: f(4) = 2⁴ = 16, g(4) = 4² = 16\n\nStep 3: Check derivatives for behavior\nf'(x) = 2ˣ ln(2)\ng'(x) = 2x\n\nStep 4: Analysis of intersections\n- At x = 2: Both functions equal 4 (one solution)\n- At x = 4: Both functions equal 16 (another solution)\n- Between 0 and 2: 2ˣ > x² initially, then x² catches up\n- Between 2 and 4: Need to check if curves intersect again\n\nStep 5: Numerical analysis shows exactly 2 solutions",
+    "answer": "2 solutions (at x = 2 and x = 4)",
+    "topic": "Exponential Functions",
+    "difficulty": "advanced",
+    "source": "jee_advanced"
+  },
+  {
+    "id": "integration_001",
+    "question": "Evaluate ∫(3x² + 2x - 1)dx",
+    "solution": "Step 1: Apply integration rules term by term\n∫(3x² + 2x - 1)dx = ∫3x²dx + ∫2xdx + ∫(-1)dx\n\nStep 2: Use power rule ∫xⁿdx = xⁿ⁺¹/(n+1) + C\n∫3x²dx = 3∫x²dx = 3 × x³/3 = x³\n∫2xdx = 2∫xdx = 2 × x²/2 = x²\n∫(-1)dx = -x\n\nStep 3: Combine results\n∫(3x² + 2x - 1)dx = x³ + x² - x + C\n\nStep 4: Verification by differentiation\nd/dx(x³ + x² - x + C) = 3x² + 2x - 1 ✓",
+    "answer": "x³ + x² - x + C",
+    "topic": "Integration",
+    "difficulty": "basic",
+    "source": "calculus_basics"
+  },
+  {
+    "id": "complex_numbers_001",
+    "question": "Find the modulus and argument of z = 3 + 4i",
+    "solution": "Step 1: Identify real and imaginary parts\nReal part: a = 3\nImaginary part: b = 4\n\nStep 2: Calculate modulus |z|\n|z| = √(a² + b²) = √(3² + 4²) = √(9 + 16) = √25 = 5\n\nStep 3: Calculate argument arg(z)\narg(z) = tan⁻¹(b/a) = tan⁻¹(4/3)\n\nStep 4: Since both a > 0 and b > 0, z is in first quadrant\narg(z) = tan⁻¹(4/3) ≈ 0.927 radians ≈ 53.13°\n\nStep 5: Express in polar form\nz = 5(cos(53.13°) + i sin(53.13°))",
+    "answer": "Modulus = 5, Argument = tan⁻¹(4/3) ≈ 53.13°",
+    "topic": "Complex Numbers",
+    "difficulty": "intermediate",
+    "source": "complex_analysis"
+  },
+  {
+    "id": "jee_003",
+    "question": "Find the maximum value of f(x) = x³ - 3x² + 2 on the interval [0, 3]",
+    "solution": "Step 1: Find critical points by setting f'(x) = 0\nf'(x) = 3x² - 6x = 3x(x - 2)\nSetting f'(x) = 0: x = 0 or x = 2\n\nStep 2: Evaluate f(x) at critical points and endpoints\nAt x = 0: f(0) = 0³ - 3(0)² + 2 = 2\nAt x = 2: f(2) = 2³ - 3(2)² + 2 = 8 - 12 + 2 = -2\nAt x = 3: f(3) = 3³ - 3(3)² + 2 = 27 - 27 + 2 = 2\n\nStep 3: Check second derivative for nature of critical points\nf''(x) = 6x - 6\nAt x = 0: f''(0) = -6 < 0 (local maximum)\nAt x = 2: f''(2) = 6 > 0 (local minimum)\n\nStep 4: Compare all values\nf(0) = 2, f(2) = -2, f(3) = 2\n\nMaximum value is 2, occurring at both x = 0 and x = 3",
+    "answer": "Maximum value = 2 (at x = 0 and x = 3)",
+    "topic": "Calculus - Optimization",
+    "difficulty": "advanced",
+    "source": "jee_mains"
+  }
+]

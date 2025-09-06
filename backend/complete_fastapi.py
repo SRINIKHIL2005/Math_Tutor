@@ -212,14 +212,53 @@ async def solve_question(request: QuestionRequest):
             if not guard_result.get('approved', True):
                 raise HTTPException(status_code=400, detail=f"Content rejected: {guard_result.get('message', 'Invalid content')}")
         
-        # Try Real Mathematical RAG FIRST (primary solution)
-        if math_rag:
+        # Try Gemini API FIRST for complex problems (since we have the key)
+        gemini_api_key = os.getenv("GEMINI_API_KEY")
+        if GEMINI_AVAILABLE and gemini_api_key and "your-" not in gemini_api_key:
             try:
-                logger.info(f"🧠 Using RAG to solve: {request.question[:50]}...")
+                logger.info(f"🤖 Using Gemini API to solve: {request.question[:50]}...")
+                # Use Gemini for direct problem solving
+                genai.configure(api_key=gemini_api_key)
+                model = genai.GenerativeModel('gemini-1.5-flash')  # Updated model name
+                
+                prompt = f"""
+                You are a mathematics expert. Solve this mathematical problem step by step:
+                
+                Question: {request.question}
+                
+                Please provide:
+                1. A clear step-by-step solution with proper mathematical reasoning
+                2. All calculations shown clearly
+                3. The final answer highlighted
+                4. Any relevant mathematical concepts or formulas used
+                
+                For statistics problems like variance, mean, etc., show all intermediate steps.
+                Format your response clearly with step numbers and explanations.
+                """
+                
+                response = model.generate_content(prompt)
+                
+                if response and response.text:
+                    return AnswerResponse(
+                        question=request.question,
+                        answer=response.text,
+                        confidence=0.92,  # High confidence for Gemini
+                        route_taken="gemini_api_direct",
+                        component_used="Google Gemini AI",
+                        timestamp=datetime.now().isoformat()
+                    )
+                
+            except Exception as e:
+                logger.error(f"Gemini API failed: {e}")
+        
+        # Try Real Mathematical RAG only for simple arithmetic problems
+        if math_rag and any(op in request.question.lower() for op in ['+', '-', '*', '/', 'add', 'subtract', 'multiply', 'divide']) and len(request.question) < 20:
+            try:
+                logger.info(f"🧠 Using RAG for simple arithmetic: {request.question[:50]}...")
                 rag_result = math_rag.generate_solution_with_rag(request.question)
                 logger.info(f"RAG result confidence: {rag_result.get('confidence', 0)}")
                 
-                if rag_result.get('confidence', 0) > 0.3:  # Lowered threshold to make RAG more likely
+                if rag_result.get('confidence', 0) > 0.7:  # Higher threshold for RAG
                     return AnswerResponse(
                         question=request.question,
                         answer=rag_result['answer'],
@@ -229,44 +268,9 @@ async def solve_question(request: QuestionRequest):
                         timestamp=datetime.now().isoformat()
                     )
                 else:
-                    logger.info("RAG confidence too low, trying other methods")
+                    logger.info("RAG confidence too low for simple problem")
             except Exception as e:
                 logger.error(f"Real Mathematical RAG failed: {e}")
-        
-        # Try Gemini API first before LangGraph (since we have the key)
-        gemini_api_key = os.getenv("GEMINI_API_KEY")
-        if GEMINI_AVAILABLE and gemini_api_key and "your-" not in gemini_api_key:
-            try:
-                logger.info("🤖 Trying Gemini API...")
-                # Use Gemini for direct problem solving
-                genai.configure(api_key=gemini_api_key)
-                model = genai.GenerativeModel('gemini-1.5-flash')  # Updated model name
-                
-                prompt = f"""
-                Solve this mathematical problem step by step:
-                Question: {request.question}
-                
-                Please provide:
-                1. A detailed step-by-step solution
-                2. The final answer
-                3. Any relevant mathematical concepts used
-                
-                Format your response clearly with step numbers and explanations.
-                """
-                
-                response = model.generate_content(prompt)
-                
-                return AnswerResponse(
-                    question=request.question,
-                    answer=response.text,
-                    confidence=0.85,  # High confidence for Gemini
-                    route_taken="Gemini API",  # Fixed: changed from list to string
-                    component_used="Gemini API",
-                    timestamp=datetime.now().isoformat()
-                )
-                
-            except Exception as e:
-                logger.error(f"Gemini API failed: {e}")
         
         # Try LangGraph Agent ONLY if Gemini fails AND OpenAI key is valid
         if langgraph_agent and os.getenv("OPENAI_API_KEY") and "your-" not in os.getenv("OPENAI_API_KEY", ""):

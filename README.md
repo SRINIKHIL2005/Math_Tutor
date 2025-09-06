@@ -254,147 +254,47 @@ DEBUG=false
 - **Confidence Threshold**: 0.8
 - **Processing Timeout**: 30 seconds
 
-## 🧪 Testing and Benchmarking
+## 🗂️ Complete Source Code Documentation
 
-### **Integration Testing**
-```bash
-# Complete system test
-cd backend
-python enterprise_integration_test.py
-```
+### Architecture Overview
+- **Entry Point**: `deploy.py` (one-click deployment script)
+- **Backend (`backend/`)**
+  - `complete_fastapi.py`: CORS setup, API endpoints, middleware configuration
+  - `math_agent.py`: LangGraph agent graph definition and orchestration
+  - `vector_database.py`: MongoDB Atlas client integration and vector similarity search
+  - `dspy_feedback.py`: DSPy human-in-the-loop feedback processing and optimization
+  - `jee_benchmark.py`: Automated benchmarking against JEE problem set
+  - `enterprise_integration_test.py`: End-to-end integration tests for the full system
+  - `requirements.txt`: Python dependency specifications
+  - `.env.template`: Environment variable placeholders and configuration schema
+- **MCP Server (`mcp_server/`)**
+  - `math_search_mcp.py`: Model-Context-Protocol handler and external web search integration
+- **Frontend (`frontend/`)**
+  - `src/App.js`: React application root and routing logic
+  - `src/components/`: UI components (MathQuestion, FeedbackPanel, ResponseDisplay, etc.)
+  - `public/`: Static assets, HTML template, and manifest
+  - `package.json`: Frontend dependencies and build scripts
+- **Configuration & Deployment**
+  - `README.md`: Project documentation and setup instructions
+  - `deploy.py`: Orchestrates environment setup, service startup, and deployment steps
 
-### **JEE Benchmarking**
-```bash
-# Run JEE evaluation
-cd backend
-python jee_benchmark.py
-```
+### Component Interactions
+1. **User → Frontend**: Submits math question via React UI
+2. **Frontend → Backend**: HTTP POST to `/solve` handled by `complete_fastapi.py`
+3. **Backend → Agent**: Invokes LangGraph agent in `math_agent.py`
+4. **Agent Workflow**:
+   - **Input Guardrails**: Validate and sanitize the user question
+   - **Routing Decision**:
+     - **Knowledge Base**: Query MongoDB Atlas via `vector_database.py`
+     - **Web Search**: Call MCP server (`math_search_mcp.py`) for external information
+   - **Response Generation**: Use LLM (OpenAI/Gemini) to create step-by-step solution
+   - **Output Guardrails**: Verify formatting, correctness, and safety
+5. **Response → Frontend → User**: Return `AnswerResponse` with solution and metadata
+6. **Feedback Loop**:
+   - User submits rating via POST `/feedback`
+   - `dspy_feedback.py` processes feedback, updates knowledge base, and may trigger model optimization
 
-### **API Testing**
-```bash
-# Test individual endpoints
-curl -X POST "http://localhost:8000/solve" \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Find the derivative of x^2 + 3x + 1", "use_dspy": false}'
-```
-
-## 📊 Performance Metrics
-
-### **Benchmarking Results**
-Based on JEE sample problems:
-
-| Method | Accuracy | Avg Similarity | Processing Time | Knowledge Base Usage |
-|--------|----------|---------------|----------------|---------------------|
-| LangGraph | ~85% | 0.82 | 2.1s | 73% |
-| DSPy | ~78% | 0.79 | 1.8s | N/A |
-
-### **System Specifications**
-- **Concurrent Requests**: Up to 10 simultaneous
-- **Response Time**: < 3 seconds average
-- **Knowledge Base**: 1000+ mathematical problems
-- **Vector Search**: < 100ms query time
-
-## 🔄 Human-in-the-Loop Learning
-
-### **Feedback System**
-1. **User rates solution** (1-5 stars)
-2. **Provides detailed feedback**
-3. **System stores feedback** in DSPy optimizer
-4. **High-rated solutions** added to knowledge base
-5. **Automatic optimization** when sufficient feedback collected
-
-### **DSPy Optimization Triggers**
-- ≥5 feedback entries with rating ≥4
-- Manual optimization via API endpoint
-- Scheduled optimization (configurable)
-
-## 🚀 Deployment Options
-
-### **Local Development**
-```bash
-python deploy.py --skip-tests
-```
-
-### **Production Deployment**
-```bash
-# Full deployment with tests
-python deploy.py
-
-# Docker deployment (if Dockerfile exists)
-docker-compose up -d
-```
-
-### **Cloud Deployment**
-- MongoDB Atlas (provided credentials)
-- FastAPI on cloud platform (Heroku, Railway, etc.)
-- React frontend on Vercel/Netlify
-
-## 🛠️ API Documentation
-
-### **Main Endpoints**
-
-| Endpoint | Method | Description |
-|----------|---------|-------------|
-| `/solve` | POST | Solve mathematical problem |
-| `/feedback` | POST | Submit human feedback |
-| `/status` | GET | System health status |
-| `/optimize-model` | POST | Trigger DSPy optimization |
-| `/feedback-stats` | GET | Feedback statistics |
-
-### **Example Request/Response**
-```json
-// Request
-{
-  "question": "Find the integral of 2x + 3",
-  "use_dspy": false,
-  "include_verification": true
-}
-
-// Response
-{
-  "question": "Find the integral of 2x + 3",
-  "answer": "The integral is x² + 3x + C",
-  "confidence_score": 0.92,
-  "processing_path": ["input_guardrails", "routing", "knowledge_base", "response_generation"],
-  "kb_results_count": 3,
-  "web_search_used": false,
-  "similar_problems": [...],
-  "metadata": {...}
-}
-```
-
-## 🤝 Contributing
-
-1. **Fork the repository**
-2. **Create feature branch**: `git checkout -b feature/amazing-feature`
-3. **Run tests**: `python enterprise_integration_test.py`
-4. **Commit changes**: `git commit -m 'Add amazing feature'`
-5. **Push to branch**: `git push origin feature/amazing-feature`
-6. **Open Pull Request**
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🎯 Assignment Compliance
-
-### **✅ All Requirements Met:**
-- ✅ **Human in a Loop**: DSPy feedback optimization system
-- ✅ **Feedback Based Learning**: Continuous improvement mechanism
-- ✅ **Math Routing Agent**: LangGraph-based intelligent routing
-- ✅ **AI Gateway with Guardrails**: Input/output validation
-- ✅ **Real Vector Database**: MongoDB Atlas with embeddings
-- ✅ **MCP Integration**: Mandatory MCP server implementation
-- ✅ **Agent Framework**: LangGraph workflow engine
-- ✅ **Bonus: JEE Benchmarking**: Automated evaluation system
-
-### **🏆 Evaluation Criteria Addressed:**
-- **Routing Efficiency**: ✅ Intelligent KB vs web search decisions
-- **Guardrails Functionality**: ✅ Input/output safety and validation
-- **Feedback Mechanism**: ✅ DSPy optimization with human feedback
-- **Implementation Feasibility**: ✅ Complete working system
-- **Enterprise Practicality**: ✅ Production-ready architecture
-
----
-
-**🎉 This is a complete enterprise-grade implementation that fully meets all assignment requirements with proper enterprise dependencies and architecture.**
+### Observability & Testing
+- **Logging**: Python `logging` for structured logs
+- **Tracing**: Optional LangSmith integration (`LANGSMITH_TRACING`)
+- **Integration Tests**: Run `enterprise_integration_test.py` for end-to-end validation

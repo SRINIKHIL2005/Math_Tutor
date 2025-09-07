@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typewriter from './Typewriter';
 
 const ResponseDisplay = ({ response, onShowFeedback }) => {
+  const [isPlayingVoice, setIsPlayingVoice] = useState(false);
+
   // Safety check - ensure response exists
   if (!response) {
     return (
@@ -22,16 +24,60 @@ const ResponseDisplay = ({ response, onShowFeedback }) => {
                       response.explanation || 
                       "Solution not available";
 
+  // Handle voice playback
+  const handleVoicePlayback = () => {
+    if (isPlayingVoice) return;
+    
+    setIsPlayingVoice(true);
+    
+    // Use Web Speech API for text-to-speech
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(solutionText);
+      utterance.rate = 0.8;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.8;
+      
+      utterance.onend = () => setIsPlayingVoice(false);
+      utterance.onerror = () => setIsPlayingVoice(false);
+      
+      speechSynthesis.speak(utterance);
+    } else {
+      alert('Speech synthesis not supported in this browser');
+      setIsPlayingVoice(false);
+    }
+  };
+
   return (
     <div className="solution-container fade-in">
       <div className="solution-header">
         <h2>✨ Solution</h2>
-        {response.confidence && (
-          <div className="confidence-indicator">
-            {(response.confidence * 100).toFixed(0)}%
-          </div>
-        )}
+        <div className="solution-meta">
+          {response.confidence && (
+            <div className="confidence-indicator">
+              {(response.confidence * 100).toFixed(0)}%
+            </div>
+          )}
+          
+          {/* Voice Control */}
+          <button 
+            className={`voice-btn ${isPlayingVoice ? 'playing' : ''}`}
+            onClick={handleVoicePlayback}
+            disabled={isPlayingVoice}
+            title={isPlayingVoice ? 'Playing...' : 'Listen to solution'}
+          >
+            {isPlayingVoice ? '🔊' : '🎵'}
+          </button>
+        </div>
       </div>
+
+      {/* Source Information */}
+      {response.source_info && (
+        <div className="source-info">
+          <span className="source-label">Source:</span>
+          <span className="source-text">{response.source_info}</span>
+          <span className="route-badge">{response.component_used}</span>
+        </div>
+      )}
 
       <div className="solution-content">
         <div className="solution-text">
@@ -57,7 +103,7 @@ const ResponseDisplay = ({ response, onShowFeedback }) => {
         <button 
           className="feedback-btn"
           onClick={onShowFeedback}
-          type="button"
+          type="button">
         >
           💭 Share Feedback
         </button>

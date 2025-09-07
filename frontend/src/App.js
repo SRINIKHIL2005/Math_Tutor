@@ -38,6 +38,7 @@ function App() {
   const [error, setError] = useState(null);
   const [sessionId, setSessionId] = useState(generateSessionId());
   const [showFeedback, setShowFeedback] = useState(false);
+  const [useVoice, setUseVoice] = useState(false); // New: Voice preference
 
   const handleSolveQuestion = async () => {
     if (!question.trim()) {
@@ -60,8 +61,7 @@ function App() {
       const solveResponse = await axios.post(`${API_BASE_URL}/solve`, {
         question: question,
         session_id: sessionId,
-        use_dspy: false,
-        include_verification: true
+        use_voice: useVoice  // Include voice preference
       });
 
       setResponse(solveResponse.data);
@@ -109,6 +109,8 @@ function App() {
           onQuestionChange={setQuestion}
           onSolve={handleSolveQuestion}
           loading={loading}
+          useVoice={useVoice}
+          onVoiceToggle={setUseVoice}
           placeholder="Enter your mathematical question (e.g., 'Solve the quadratic equation x² + 5x + 6 = 0')"
         />
 

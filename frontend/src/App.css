@@ -1004,6 +1004,12 @@ body {
   margin: 0;
 }
 
+.solution-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .confidence-indicator {
   background: rgba(255, 255, 255, 0.2);
   padding: 8px 16px;
@@ -1012,6 +1018,113 @@ body {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voice-btn {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 15px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.voice-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.voice-btn.playing {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Voice Toggle Styles */
+.voice-toggle-container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.voice-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.voice-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+}
+
+.voice-toggle-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.voice-toggle:hover .voice-toggle-label {
+  color: white;
+}
+
+/* Source Information Styles */
+.source-info {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.source-label {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.source-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.route-badge {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
 }
 
 .solution-content {

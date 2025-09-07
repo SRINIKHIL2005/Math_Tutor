@@ -7,6 +7,8 @@ const MathQuestion = ({
   onSolve,  // Add support for both prop names
   isLoading, 
   loading,  // Add support for both prop names
+  useVoice,  // New: Voice preference
+  onVoiceToggle,  // New: Voice toggle handler
   placeholder = "Enter your mathematical question (e.g., 'Solve the quadratic equation x² + 5x + 6 = 0')"
 }) => {
   // Use the loading state from either prop
@@ -82,6 +84,23 @@ const MathQuestion = ({
             Example 3
           </button>
         </div>
+        
+        {/* Voice Toggle */}
+        {onVoiceToggle && (
+          <div className="voice-toggle-container">
+            <label className="voice-toggle">
+              <input
+                type="checkbox"
+                checked={useVoice}
+                onChange={(e) => onVoiceToggle(e.target.checked)}
+                disabled={isActuallyLoading}
+              />
+              <span className="voice-toggle-label">
+                🎵 Enable voice response
+              </span>
+            </label>
+          </div>
+        )}
         
         <button
           type="submit"

@@ -212,17 +212,79 @@ async def solve_question(request: QuestionRequest):
             if not guard_result.get('approved', True):
                 raise HTTPException(status_code=400, detail=f"Content rejected: {guard_result.get('message', 'Invalid content')}")
         
-        # Try Gemini API FIRST for complex problems (since we have the key)
+        # STEP 1: Try MongoDB Atlas Knowledge Base FIRST (Primary Route)
+        if mongodb_rag:
+            try:
+                logger.info(f"📚 Searching MongoDB knowledge base for: {request.question[:50]}...")
+                rag_results = mongodb_rag.search_similar_problems(request.question, limit=3)
+                if rag_results and len(rag_results) > 0:
+                    best_match = rag_results[0]
+                    similarity = best_match.get('similarity', 0)
+                    logger.info(f"📊 Best MongoDB match similarity: {similarity}")
+                    
+                    if similarity > 0.7:  # High similarity threshold
+                        answer = f"**Step-by-Step Solution:**\n\n{best_match.get('solution', 'Solution not available')}"
+                        
+                        return AnswerResponse(
+                            question=request.question,
+                            answer=answer,
+                            confidence=min(0.95, similarity + 0.1),
+                            route_taken="mongodb_knowledge_base",
+                            component_used="MongoDB Atlas Vector Search",
+                            timestamp=datetime.now().isoformat()
+                        )
+                    else:
+                        logger.info(f"MongoDB similarity too low: {similarity}")
+                else:
+                    logger.info("No matches found in MongoDB knowledge base")
+            except Exception as e:
+                logger.error(f"❌ MongoDB knowledge base failed: {e}")
+        
+        # STEP 2: Try Web Search/MCP if Knowledge Base fails (Secondary Route)
+        if web_search:
+            try:
+                logger.info(f"🌐 Performing web search for: {request.question[:50]}...")
+                search_results = await web_search.search(request.question, max_results=3)
+                
+                if (search_results and 
+                    isinstance(search_results, dict) and 
+                    search_results.get('results') and 
+                    len(search_results['results']) > 0):
+                    
+                    # Handle both dict and string results
+                    first_result = search_results['results'][0]
+                    if isinstance(first_result, dict):
+                        content = first_result.get('content', 
+                                 first_result.get('snippet', 
+                                 first_result.get('title', 
+                                 first_result.get('url', 'No content'))))
+                    else:
+                        content = str(first_result)[:500]
+                    
+                    answer = f"**Based on web search:**\n\n{content[:500]}..."
+                    
+                    return AnswerResponse(
+                        question=request.question,
+                        answer=answer,
+                        confidence=0.8,
+                        route_taken="web_search_mcp",
+                        component_used="MCP Web Search",
+                        timestamp=datetime.now().isoformat()
+                    )
+            except Exception as e:
+                logger.error(f"❌ Web search failed: {e}")
+        
+        # STEP 3: Try Gemini API as final fallback (Tertiary Route)
+        # STEP 3: Try Gemini API as final fallback (Tertiary Route)
         gemini_api_key = os.getenv("GEMINI_API_KEY")
         if GEMINI_AVAILABLE and gemini_api_key and "your-" not in gemini_api_key:
             try:
-                logger.info(f"🤖 Using Gemini API to solve: {request.question[:50]}...")
-                # Use Gemini for direct problem solving
+                logger.info(f"🤖 Using Gemini API as final fallback for: {request.question[:50]}...")
                 genai.configure(api_key=gemini_api_key)
-                model = genai.GenerativeModel('gemini-1.5-flash')  # Updated model name
+                model = genai.GenerativeModel('gemini-1.5-flash')
                 
                 prompt = f"""
-                You are a mathematics expert. Solve this mathematical problem step by step:
+                You are a mathematics professor. Solve this mathematical problem step by step:
                 
                 Question: {request.question}
                 
@@ -242,23 +304,24 @@ async def solve_question(request: QuestionRequest):
                     return AnswerResponse(
                         question=request.question,
                         answer=response.text,
-                        confidence=0.92,  # High confidence for Gemini
-                        route_taken="gemini_api_direct",
-                        component_used="Google Gemini AI",
+                        confidence=0.92,
+                        route_taken="gemini_api_fallback",
+                        component_used="Google Gemini AI (Fallback)",
                         timestamp=datetime.now().isoformat()
                     )
                 
             except Exception as e:
-                logger.error(f"Gemini API failed: {e}")
+                logger.error(f"❌ Gemini API failed: {e}")
         
-        # Try Real Mathematical RAG only for simple arithmetic problems
-        if math_rag and any(op in request.question.lower() for op in ['+', '-', '*', '/', 'add', 'subtract', 'multiply', 'divide']) and len(request.question) < 20:
+        # Remove old RAG fallback and keep only essential fallbacks
+        if math_rag:
             try:
-                logger.info(f"🧠 Using RAG for simple arithmetic: {request.question[:50]}...")
+                logger.info(f"� Using RAG to solve: {request.question[:50]}...")
                 rag_result = math_rag.generate_solution_with_rag(request.question)
                 logger.info(f"RAG result confidence: {rag_result.get('confidence', 0)}")
                 
-                if rag_result.get('confidence', 0) > 0.7:  # Higher threshold for RAG
+                # Use RAG if confidence is good (even fuzzy matches for known problems)
+                if rag_result.get('confidence', 0) > 0.7:
                     return AnswerResponse(
                         question=request.question,
                         answer=rag_result['answer'],
@@ -268,11 +331,11 @@ async def solve_question(request: QuestionRequest):
                         timestamp=datetime.now().isoformat()
                     )
                 else:
-                    logger.info("RAG confidence too low for simple problem")
+                    logger.info("RAG confidence too low, trying other methods...")
             except Exception as e:
                 logger.error(f"Real Mathematical RAG failed: {e}")
         
-        # Try LangGraph Agent ONLY if Gemini fails AND OpenAI key is valid
+        # Try LangGraph Agent if all else fails
         if langgraph_agent and os.getenv("OPENAI_API_KEY") and "your-" not in os.getenv("OPENAI_API_KEY", ""):
             try:
                 logger.info("🤖 Trying LangGraph Agent...")
@@ -292,29 +355,7 @@ async def solve_question(request: QuestionRequest):
         else:
             logger.info("⚠️ Skipping LangGraph - invalid/missing OpenAI API key")
         
-        # Try RAG knowledge base search (backup)
-        if mongodb_rag:
-            try:
-                rag_results = mongodb_rag.search_similar_problems(request.question, limit=3)
-                if rag_results and len(rag_results) > 0:
-                    # Use the most similar problem
-                    best_match = rag_results[0]
-                    if best_match.get('similarity', 0) > 0.7:  # High similarity threshold
-                        answer = f"Based on knowledge base:\n\n{best_match.get('solution', 'Solution not available')}"
-                        
-                        return AnswerResponse(
-                            question=request.question,
-                            answer=answer,
-                            confidence=0.9,
-                            route_taken="knowledge_base",
-                            component_used="MongoDB RAG",
-                            timestamp=datetime.now().isoformat()
-                        )
-            except Exception as e:
-                logger.error(f"MongoDB RAG knowledge base failed: {e}")
-        
-        # Fallback to web search
-        if web_search:
+                # 3. Gemini API fallback (if web search failed)
             try:
                 search_results = await web_search.search(request.question, max_results=3)
                 

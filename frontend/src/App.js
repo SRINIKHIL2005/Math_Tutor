@@ -10,7 +10,7 @@ import FeedbackPanel from './components/FeedbackPanel';
 import SystemStatus from './components/SystemStatus';
 import LoadingSpinner from './components/LoadingSpinner';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
 
 // Generate session ID
 const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

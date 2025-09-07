@@ -294,7 +294,3 @@ DEBUG=false
 - **Logging**: Python `logging` for structured logs
 - **Tracing**: Optional LangSmith integration (`LANGSMITH_TRACING`)
 - **Integration Tests**: Run `enterprise_integration_test.py` for end-to-end validation
-
-## 🌐 GitHub Pages Deployment
-- The frontend is published via GitHub Pages on the `main` branch, using the repository root as the source.
-- You can access the live site at: https://srinikhil2005.github.io/Math_Tutor/

@@ -16,37 +16,37 @@ class SimpleKnowledgeBase:
     def __init__(self):
         self.problems = {
             "2+2": {
-                "answer": "2 + 2 = 4\n\nThis is basic addition. When we add 2 and 2, we get 4.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** 2 + 2\n\n**Step 1:** Identify the operation\n- This is an addition problem\n- We need to add 2 and 2 together\n\n**Step 2:** Perform the addition\n- 2 + 2 = 4\n\n**Final Answer:** 4\n\nThis is basic addition where we combine two quantities of 2 to get 4.",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "what is 2+2": {
-                "answer": "2 + 2 = 4\n\nThis is basic addition. When we add 2 and 2, we get 4.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** What is 2 + 2?\n\n**Step 1:** Identify the operation\n- This is an addition problem\n- We need to add 2 and 2 together\n\n**Step 2:** Perform the addition\n- 2 + 2 = 4\n\n**Final Answer:** 4\n\nThis is basic addition where we combine two quantities of 2 to get 4.",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "whats 2+2": {
-                "answer": "2 + 2 = 4\n\nThis is basic addition. When we add 2 and 2, we get 4.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** What's 2 + 2?\n\n**Step 1:** Identify the operation\n- This is an addition problem\n- We need to add 2 and 2 together\n\n**Step 2:** Perform the addition\n- 2 + 2 = 4\n\n**Final Answer:** 4\n\nThis is basic addition where we combine two quantities of 2 to get 4.",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "2*4": {
-                "answer": "2 × 4 = 8\n\nThis is multiplication. When we multiply 2 by 4, we get 8.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** 2 × 4\n\n**Step 1:** Identify the operation\n- This is a multiplication problem\n- We need to multiply 2 by 4\n\n**Step 2:** Perform the multiplication\n- 2 × 4 = 8\n- This means adding 2 four times: 2 + 2 + 2 + 2 = 8\n\n**Final Answer:** 8",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "what is 2*4": {
-                "answer": "2 × 4 = 8\n\nThis is multiplication. When we multiply 2 by 4, we get 8.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** What is 2 × 4?\n\n**Step 1:** Identify the operation\n- This is a multiplication problem\n- We need to multiply 2 by 4\n\n**Step 2:** Perform the multiplication\n- 2 × 4 = 8\n- This means adding 2 four times: 2 + 2 + 2 + 2 = 8\n\n**Final Answer:** 8",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "5+3": {
-                "answer": "5 + 3 = 8\n\nAdding 5 and 3 gives us 8.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** 5 + 3\n\n**Step 1:** Identify the operation\n- This is an addition problem\n- We need to add 5 and 3 together\n\n**Step 2:** Perform the addition\n- 5 + 3 = 8\n\n**Final Answer:** 8",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
             "10-4": {
-                "answer": "10 - 4 = 6\n\nSubtracting 4 from 10 gives us 6.",
+                "answer": "**Step-by-Step Solution:**\n\n**Problem:** 10 - 4\n\n**Step 1:** Identify the operation\n- This is a subtraction problem\n- We need to subtract 4 from 10\n\n**Step 2:** Perform the subtraction\n- 10 - 4 = 6\n\n**Final Answer:** 6",
                 "confidence": 0.95,
                 "topic": "arithmetic"
             },
@@ -68,7 +68,7 @@ class SimpleKnowledgeBase:
         }
     
     def search_similar(self, query: str) -> Dict[str, Any]:
-        """Search for similar problems"""
+        """Search for similar problems with improved matching"""
         query_lower = query.lower().strip()
         
         # Direct match first
@@ -81,15 +81,22 @@ class SimpleKnowledgeBase:
                 'topic': problem['topic']
             }
         
-        # Fuzzy matching for common variations
+        # Smart fuzzy matching - avoid matching just single numbers
         for key, problem in self.problems.items():
-            if any(word in query_lower for word in key.split()):
-                return {
-                    'answer': problem['answer'],
-                    'confidence': problem['confidence'] - 0.1,  # Lower confidence for fuzzy match
-                    'route_taken': 'simple_knowledge_base_fuzzy',
-                    'topic': problem['topic']
-                }
+            # Skip if it's just matching single digit numbers
+            if len(query_lower) > 20:  # For long queries like variance questions
+                continue
+                
+            # For simple arithmetic questions, check for meaningful matches
+            if any(term in query_lower for term in key.split() if len(term) > 1 or term in ['+', '-', '*', '/', '=']):
+                # Additional check: ensure it's actually a math question
+                if any(op in query_lower for op in ['+', '-', '*', '/', '=', 'what is', 'calculate', 'solve']):
+                    return {
+                        'answer': problem['answer'],
+                        'confidence': problem['confidence'] - 0.1,
+                        'route_taken': 'simple_knowledge_base_fuzzy',
+                        'topic': problem['topic']
+                    }
         
         return None
     

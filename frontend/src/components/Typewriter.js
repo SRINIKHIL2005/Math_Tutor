@@ -8,9 +8,10 @@ const Typewriter = ({ text = '', speed = 40 }) => {
     setDisplayedText('');
     let currentIndex = 0;
     const interval = setInterval(() => {
-      setDisplayedText(prev => prev + text[currentIndex]);
-      currentIndex++;
-      if (currentIndex >= text.length) {
+      if (currentIndex < text.length) {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        currentIndex++;
+      } else {
         clearInterval(interval);
       }
     }, speed);

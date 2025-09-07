@@ -10,57 +10,24 @@ import FeedbackPanel from './components/FeedbackPanel';
 import SystemStatus from './components/SystemStatus';
 import LoadingSpinner from './components/LoadingSpinner';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
-
-// Demo mode for GitHub Pages (when backend is not available)
-const DEMO_MODE = process.env.NODE_ENV === 'production' && !process.env.REACT_APP_API_URL;
-
-// Demo responses for different question types
-const getDemoResponse = (question) => {
-  const lowerQ = question.toLowerCase();
-  
-  if (lowerQ.includes('2+2') || lowerQ.includes('2 + 2')) {
-    return {
-      question: question,
-      answer: "**Step-by-step solution:**\n\n1. We need to add 2 and 2\n2. 2 + 2 = 4\n\n**Final Answer:** 4\n\nThis is a basic addition problem. When we combine 2 units with another 2 units, we get a total of 4 units.",
-      confidence: 0.95,
-      route_taken: "demo_mode",
-      component_used: "Demo Math Solver",
-      timestamp: new Date().toISOString()
-    };
+// Smart API URL detection
+const getApiUrl = () => {
+  // Check environment variable first
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
   }
   
-  if (lowerQ.includes('derivative') || lowerQ.includes('differentiate')) {
-    return {
-      question: question,
-      answer: "**Calculus Problem - Derivative:**\n\n*This is a demo response showing the type of mathematical solutions our system provides.*\n\nFor derivative problems, our system would:\n1. Parse the mathematical expression\n2. Apply differentiation rules\n3. Simplify the result\n4. Provide step-by-step explanation\n\n**Note:** Connect to the full backend system for complete calculus solutions.",
-      confidence: 0.85,
-      route_taken: "demo_mode", 
-      component_used: "Demo Math Solver",
-      timestamp: new Date().toISOString()
-    };
+  // If on GitHub Pages, return null to indicate backend unavailable
+  // This will trigger proper error handling instead of failed requests
+  if (window.location.hostname === 'srinikhil2005.github.io') {
+    return null; // No backend available on GitHub Pages
   }
   
-  if (lowerQ.includes('quadratic') || lowerQ.includes('x^2')) {
-    return {
-      question: question,
-      answer: "**Quadratic Equation Demo:**\n\nFor quadratic equations like ax² + bx + c = 0, our system uses:\n\n1. **Quadratic Formula:** x = (-b ± √(b²-4ac)) / 2a\n2. **Factoring methods** when applicable\n3. **Graphical analysis** for visual learners\n\n*This is a demo response. The full system provides complete step-by-step solutions with multiple approaches.*",
-      confidence: 0.88,
-      route_taken: "demo_mode",
-      component_used: "Demo Math Solver", 
-      timestamp: new Date().toISOString()
-    };
-  }
-  
-  return {
-    question: question,
-    answer: `**Demo Mode Response:**\n\nYou asked: "${question}"\n\n*This is a demonstration of our Math Tutor system deployed on GitHub Pages.*\n\n**Our Full System Includes:**\n- 🧠 Advanced RAG with MongoDB Atlas vector search\n- 🔍 Web search integration via MCP protocol\n- 🤖 Google Gemini AI for complex problem solving\n- 📚 Human-in-the-loop learning system\n- ⚡ Real-time mathematical reasoning\n\n**To experience the full system:** Run the backend server locally and connect to localhost:8001\n\n**Available Routes:**\n1. MongoDB Atlas Knowledge Base\n2. Web Search + MCP Integration  \n3. Google Gemini API Fallback`,
-    confidence: 0.75,
-    route_taken: "demo_mode",
-    component_used: "GitHub Pages Demo",
-    timestamp: new Date().toISOString()
-  };
+  // Default to localhost for local development
+  return 'http://localhost:8001';
 };
+
+const API_BASE_URL = getApiUrl();
 
 // Generate session ID
 const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -86,36 +53,25 @@ function App() {
   }, []);
 
   const fetchSystemStatus = async () => {
-    if (DEMO_MODE) {
-      // Demo system status for GitHub Pages
+    // If no backend URL available (GitHub Pages), set offline status
+    if (!API_BASE_URL) {
       setSystemStatus({
-        status: "Demo Mode",
-        components: {
-          "Demo Math Solver": "✅ ACTIVE",
-          "GitHub Pages": "✅ DEPLOYED", 
-          "Frontend": "✅ WORKING",
-          "Backend": "⚠️ DEMO MODE - Connect locally for full features"
-        },
-        timestamp: new Date().toISOString(),
-        demo_mode: true
+        status: "Offline Mode - GitHub Pages",
+        message: "Backend not available. This is a static deployment.",
+        suggestion: "Run locally or deploy backend to see full features"
       });
       return;
     }
-    
+
     try {
       const statusResponse = await axios.get(`${API_BASE_URL}/status`);
       setSystemStatus(statusResponse.data);
     } catch (err) {
       console.error('Failed to fetch system status:', err);
-      // Fallback to demo mode if backend is not available
       setSystemStatus({
-        status: "Backend Unavailable",
-        components: {
-          "Demo Math Solver": "✅ ACTIVE",
-          "Backend Connection": "❌ FAILED - Using demo mode"
-        },
-        timestamp: new Date().toISOString(),
-        demo_mode: true
+        status: "Backend Connection Failed",
+        message: "Could not connect to the backend server",
+        error: err.message
       });
     }
   };
@@ -126,21 +82,16 @@ function App() {
       return;
     }
 
+    // If no backend URL available, show informative message
+    if (!API_BASE_URL) {
+      setError('Backend not available on GitHub Pages. Please run the application locally or deploy the backend to a cloud service to use the full math tutoring features.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResponse(null);
     setShowFeedback(false);
-
-    // Demo mode handling
-    if (DEMO_MODE) {
-      // Simulate loading delay for realistic feel
-      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-      
-      const demoResponse = getDemoResponse(question);
-      setResponse(demoResponse);
-      setLoading(false);
-      return;
-    }
 
     try {
       const solveResponse = await axios.post(`${API_BASE_URL}/solve`, {
@@ -159,15 +110,10 @@ function App() {
 
     } catch (err) {
       console.error('Solve request failed:', err);
-      
-      // Fallback to demo mode if backend fails
-      console.log('Falling back to demo mode...');
-      const demoResponse = getDemoResponse(question);
-      setResponse({
-        ...demoResponse,
-        answer: `**Backend Connection Failed - Demo Response:**\n\n${demoResponse.answer}\n\n⚠️ *Note: This is a demo response because the backend server is not accessible.*`,
-        route_taken: "demo_fallback"
-      });
+      setError(
+        err.response?.data?.detail || 
+        'Failed to solve the mathematical problem. Please check your backend connection and try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -221,11 +167,7 @@ function App() {
 
   return (
     <div className="App">
-      <Header 
-        isDemo={DEMO_MODE || (systemStatus && systemStatus.demo_mode)}
-        sidebarOpen={sidebarOpen} 
-        toggleSidebar={() => setSidebarOpen(!sidebarOpen)} 
-      />
+      <Header sidebarOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       <div className="app-container">
         {/* Sidebar */}

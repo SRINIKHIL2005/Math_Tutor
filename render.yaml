@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: math-tutor-backend
+    runtime: python3
+    buildCommand: "./build.sh"
+    startCommand: "./start.sh"
+    plan: free
+    rootDir: backend
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.7"
+      - key: PORT
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false  # You'll set this manually
+      - key: TAVILY_API_KEY
+        sync: false  # You'll set this manually
+      - key: MONGODB_URI
+        sync: false  # You'll set this manually
+      - key: ENVIRONMENT
+        value: "production"

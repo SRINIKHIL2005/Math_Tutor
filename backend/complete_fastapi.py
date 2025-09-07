@@ -35,7 +35,10 @@ app.add_middleware(
         "http://127.0.0.1:3000", 
         "http://127.0.0.1:3001",
         "https://srinikhil2005.github.io",
-        "https://srinikhil2005.github.io/Math_Tutor"
+        "https://srinikhil2005.github.io/Math_Tutor",
+        # Add Render deployment domains (will be auto-updated)
+        "https://*.onrender.com",
+        "https://math-tutor-backend.onrender.com",  # Your future Render URL
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -191,6 +194,15 @@ async def root():
 async def favicon():
     """Return a simple favicon to avoid 404 errors"""
     return {"message": "No favicon available"}
+
+@app.get("/health")
+async def health_check():
+    """Simple health check for Railway deployment"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "service": "Math Tutor API"
+    }
 
 @app.get("/status")
 async def get_system_status():

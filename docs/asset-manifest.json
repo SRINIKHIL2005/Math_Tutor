@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Math_Tutor/static/css/main.076375b9.css",
-    "main.js": "/Math_Tutor/static/js/main.f0951460.js",
+    "main.css": "/Math_Tutor/static/css/main.89d36c85.css",
+    "main.js": "/Math_Tutor/static/js/main.dc344cb4.js",
     "index.html": "/Math_Tutor/index.html",
-    "main.076375b9.css.map": "/Math_Tutor/static/css/main.076375b9.css.map",
-    "main.f0951460.js.map": "/Math_Tutor/static/js/main.f0951460.js.map"
+    "main.89d36c85.css.map": "/Math_Tutor/static/css/main.89d36c85.css.map",
+    "main.dc344cb4.js.map": "/Math_Tutor/static/js/main.dc344cb4.js.map"
   },
   "entrypoints": [
-    "static/css/main.076375b9.css",
-    "static/js/main.f0951460.js"
+    "static/css/main.89d36c85.css",
+    "static/js/main.dc344cb4.js"
   ]
 }

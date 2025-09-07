@@ -38,7 +38,7 @@ app.add_middleware(
         "https://srinikhil2005.github.io/Math_Tutor",
         # Add Render deployment domains (will be auto-updated)
         "https://*.onrender.com",
-        "https://math-tutor-backend.onrender.com",  # Your future Render URL
+        "https://math-tutor-1.onrender.com",  # Your actual Render URL
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -16,10 +16,9 @@ const getApiUrl = () => {
     return process.env.REACT_APP_API_URL;
   }
   
-  // If on GitHub Pages, return null to indicate backend unavailable
-  // This will trigger proper error handling instead of failed requests
+  // If on GitHub Pages, use the live Render backend
   if (window.location.hostname === 'srinikhil2005.github.io') {
-    return null; // No backend available on GitHub Pages
+    return 'https://math-tutor-1.onrender.com'; // Live backend on Render
   }
   
   // Default to localhost for local development

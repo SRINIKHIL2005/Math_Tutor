@@ -7,7 +7,6 @@ import Header from './components/Header';
 import MathQuestion from './components/MathQuestion';
 import ResponseDisplay from './components/ResponseDisplay';
 import FeedbackPanel from './components/FeedbackPanel';
-import SystemStatus from './components/SystemStatus';
 import LoadingSpinner from './components/LoadingSpinner';
 
 // Smart API URL detection
@@ -39,42 +38,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [sessionId, setSessionId] = useState(generateSessionId());
-  const [systemStatus, setSystemStatus] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [settings, setSettings] = useState({
-    useDspy: false,
-    includeVerification: true
-  });
-
-  // Fetch system status on component mount
-  useEffect(() => {
-    fetchSystemStatus();
-  }, []);
-
-  const fetchSystemStatus = async () => {
-    // If no backend URL available (GitHub Pages), set offline status
-    if (!API_BASE_URL) {
-      setSystemStatus({
-        status: "Offline Mode - GitHub Pages",
-        message: "Backend not available. This is a static deployment.",
-        suggestion: "Run locally or deploy backend to see full features"
-      });
-      return;
-    }
-
-    try {
-      const statusResponse = await axios.get(`${API_BASE_URL}/status`);
-      setSystemStatus(statusResponse.data);
-    } catch (err) {
-      console.error('Failed to fetch system status:', err);
-      setSystemStatus({
-        status: "Backend Connection Failed",
-        message: "Could not connect to the backend server",
-        error: err.message
-      });
-    }
-  };
 
   const handleSolveQuestion = async () => {
     if (!question.trim()) {
@@ -97,16 +61,11 @@ function App() {
       const solveResponse = await axios.post(`${API_BASE_URL}/solve`, {
         question: question,
         session_id: sessionId,
-        use_dspy: settings.useDspy,
-        include_verification: settings.includeVerification
+        use_dspy: false,
+        include_verification: true
       });
 
       setResponse(solveResponse.data);
-      
-      // Don't automatically show feedback - user will click button when ready
-      // setTimeout(() => {
-      //   setShowFeedback(true);
-      // }, 1000);
 
     } catch (err) {
       console.error('Solve request failed:', err);
@@ -133,9 +92,6 @@ function App() {
       });
 
       setShowFeedback(false);
-      
-      // Show success message briefly
-      // setTimeout(() => alert('Feedback submitted successfully!'), 100);
 
     } catch (err) {
       console.error('Failed to submit feedback:', err);
@@ -143,85 +99,19 @@ function App() {
     }
   };
 
-  const handleNewSession = () => {
-    setSessionId(generateSessionId());
-    setQuestion('');
-    setResponse(null);
-    setError(null);
-    setShowFeedback(false);
-  };
-
-  const handleOptimizeModel = async () => {
-    try {
-      const optimizeResponse = await axios.post(`${API_BASE_URL}/optimize-model`);
-      alert(`Model optimization started: ${optimizeResponse.data.message}`);
-      
-      // Refresh status after optimization
-      setTimeout(fetchSystemStatus, 1000);
-      
-    } catch (err) {
-      const errorMsg = err.response?.data?.detail || 'Failed to start model optimization';
-      alert(`Optimization failed: ${errorMsg}`);
-    }
-  };
-
   return (
     <div className="App">
-      <Header sidebarOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+      <Header />
       
-      <div className="app-container">
-        {/* Sidebar */}
-        <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-          <div className="sidebar-header">
-            <h2>Dashboard</h2>
-            <button onClick={() => setSidebarOpen(false)} className="close-sidebar-btn">
-              &times;
-            </button>
-          </div>
-          
-          {/* System Status */}
-          <SystemStatus 
-            status={systemStatus} 
-            onRefresh={fetchSystemStatus}
-            onOptimizeModel={handleOptimizeModel}
-          />
-
-          {/* Settings Panel */}
-          <div className="settings-panel">
-            <h3>🔧 Settings</h3>
-            <div className="settings-grid">
-              <label className="setting-item">
-                <input
-                  type="checkbox"
-                  checked={settings.useDspy}
-                  onChange={(e) => setSettings(prev => ({...prev, useDspy: e.target.checked}))}
-                />
-                <span>Use DSPy Optimization 🧠</span>
-              </label>
-              <label className="setting-item">
-                <input
-                  type="checkbox"
-                  checked={settings.includeVerification}
-                  onChange={(e) => setSettings(prev => ({...prev, includeVerification: e.target.checked}))}
-                />
-                <span>Include Verification ✅</span>
-              </label>
-            </div>
-            <button onClick={handleNewSession} className="new-session-btn">
-              🆕 New Session
-            </button>
-          </div>
-        </div>
-        
-        <main className={`main-container ${sidebarOpen ? 'main-shifted' : ''}`}>
-          {/* Main Input Area */}
-          <MathQuestion
-            question={question}
-            onQuestionChange={setQuestion}
-            onSolve={handleSolveQuestion}
-            loading={loading}
-            placeholder="Enter your mathematical question (e.g., 'Solve the quadratic equation x² + 5x + 6 = 0')"
-          />
+      <main className="main-container">
+        {/* Main Input Area */}
+        <MathQuestion
+          question={question}
+          onQuestionChange={setQuestion}
+          onSolve={handleSolveQuestion}
+          loading={loading}
+          placeholder="Enter your mathematical question (e.g., 'Solve the quadratic equation x² + 5x + 6 = 0')"
+        />
 
         {/* Error Display */}
         {error && (
@@ -255,7 +145,6 @@ function App() {
         )}
       </main>
     </div>
-  </div>
   );
 }
 
